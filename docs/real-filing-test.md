@@ -23,14 +23,14 @@ mainboard issuer, the nearest stand-in for the SME filings that are the target.
 
 | Item | Footnote | ✓ |
 |---|---|---|
-| Promoters | Sanjay Kumar Sarraf, Krishna Ranjan, together 87.64% | ✅ |
-| Directors' DINs | 01174144, 01265320, 03370404, 00996242, 09698462, 00701892 | ✅ all six |
-| Lead manager | Mefcom Capital Markets, INM000000016 | ✅ |
-| Registrar, legal counsel, syndicate | KFin (INR000000221), Dentons Link Legal, Mefcom Securities | ✅ |
-| Auditor change | SCAN Associates resigned 23 May 2024, "pre-occupation" | ✅ |
-| Group companies | Opticon Pipes, Terragon Techno Machines, Balaji Travco, Ann Projects | ✅ |
-| FY26 related-party amounts | ₹33.78 M, 27.82 M, 24.24 M, 15.44 M, 14.31 M (₹ million) | ✅ to the decimal |
-| Use of IPO money | Capex ₹15.41 Cr, working capital ₹115 Cr, GCP to be decided | ✅ |
+| Promoters | Sanjay Kumar Sarraf, Krishna Ranjan, together 87.64% | yes |
+| Directors' DINs | 01174144, 01265320, 03370404, 00996242, 09698462, 00701892 | yes, all six |
+| Lead manager | Mefcom Capital Markets, INM000000016 | yes |
+| Registrar, legal counsel, syndicate | KFin (INR000000221), Dentons Link Legal, Mefcom Securities | yes |
+| Auditor change | SCAN Associates resigned 23 May 2024, "pre-occupation" | yes |
+| Group companies | Opticon Pipes, Terragon Techno Machines, Balaji Travco, Ann Projects | yes |
+| FY26 related-party amounts | ₹33.78 M, 27.82 M, 24.24 M, 15.44 M, 14.31 M (₹ million) | yes to the decimal |
+| Use of IPO money | Capex ₹15.41 Cr, working capital ₹115 Cr, GCP to be decided | yes |
 
 ## What it flagged
 

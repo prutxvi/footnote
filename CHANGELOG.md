@@ -17,6 +17,12 @@ Notable changes to Footnote. Dates are the day the work landed.
 - CI also runs on the `footnote` branch.
 
 ### Changed
+- README: all emoji removed from headings, the feature table and the accuracy table. The
+  screenshot gallery is now an even two-column layout with uniform images and captions, so no
+  row is taller than its neighbour.
+- `screenshots/`: re-captured at a uniform size — 1440x900 (16:10) on desktop and 390x844 on
+  phone — so the gallery rows line up. `flags.png` and `filing-dark.png` were replaced by
+  `dark.png` and `home-filings.png`.
 - `LICENSE`: copyright holder is now Footnote, and the year is 2026.
 - `CONTRIBUTING.md`: rewritten against the real project — real clone URL, real commands, the
   real test and lint setup. The old file was a generic template that named a repository that

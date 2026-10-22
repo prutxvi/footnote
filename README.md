@@ -13,7 +13,7 @@ goes**, runs fixed checks over what it finds, and links every line to the page o
 it came from, with the quote highlighted.
 
 <p>
-  <img src="screenshots/home.png" alt="Footnote home page: the latest filing read, its headline, and its flags" width="820">
+  <img src="screenshots/home.png" alt="Footnote home page: the latest filing read, its headline and its flags" width="860">
 </p>
 
 <p>
@@ -31,45 +31,52 @@ it came from, with the quote highlighted.
 
 ---
 
-## ✨ What you get for each filing
+## What you get for each filing
 
 | | |
 |---|---|
-| 🗞️ **A one-line headline** | Written from the strongest finding, not a summary. *"Annu Projects did ₹12.95 Cr of business with its own related companies in Fiscal 2026, 5.36% of its revenue."* |
-| 🚩 **Red flags from fixed rules** | Related-party business as a share of revenue, money lent to related parties, IPO money going to related parties, auditor resignations, pending criminal or regulatory cases, the lead manager's record, and profit without operating cash. **No model decides what is suspicious.** |
-| 🕸️ **A connection map** | Promoters and directors on the left, group and related companies on the right, bankers and auditors on top, the company in the centre. Money is drawn in red with thickness by amount; salaries and sitting fees are thin grey *pay* lines. Deterministic layout, not a force blob. |
-| 📄 **The source, always** | Click any flag, line, box or page number and the real PDF page opens with the quote highlighted. Every quote is checked word for word against its page; anything not found is marked **unverified** and never silently trusted. |
-| 🔗 **People and companies across IPOs** | People link only by **DIN**, companies by **CIN**, **SEBI registration** or name — so "everywhere this banker appears" is one click, and names that collide do not merge. |
-| 💬 **Questions with citations** | Answers use only the filing and cite `S1 · p.73`-style sources. Retrieval is TF-IDF over the filing's own facts and pages — no embedding API, no vector database. |
-| 🌗 **Paper-and-ink UI** | An investigative report, not a hacker terminal: serif headlines, paper surfaces, red only where money or risk is involved, dark mode, and a layout that works on a phone. |
+| **A one-line headline** | Written from the strongest finding, not a summary. *"Annu Projects did ₹12.95 Cr of business with its own related companies in Fiscal 2026, 5.36% of its revenue."* |
+| **Red flags from fixed rules** | Related-party business as a share of revenue, money lent to related parties, IPO money going to related parties, auditor resignations, pending criminal or regulatory cases, the lead manager's record, and profit without operating cash. No model decides what is suspicious. |
+| **A connection map** | Promoters and directors on the left, group and related companies on the right, bankers and auditors on top, the company in the centre. Money is drawn in red with thickness by amount; salaries and sitting fees are thin grey *pay* lines. Deterministic layout, not a force blob. |
+| **The source, always** | Click any flag, line, box or page number and the real PDF page opens with the quote highlighted. Every quote is checked word for word against its page; anything not found is marked **unverified** and never silently trusted. |
+| **People and companies across IPOs** | People link only by **DIN**, companies by **CIN**, **SEBI registration** or name — so "everywhere this banker appears" is one click, and names that collide do not merge. |
+| **Questions with citations** | Answers use only the filing and cite `S1 · p.73`-style sources. Retrieval is TF-IDF over the filing's own facts and pages — no embedding API, no vector database. |
+| **Paper-and-ink UI** | An investigative report, not a hacker terminal: serif headlines, paper surfaces, red only where money or risk is involved, dark mode, and a layout that works on a phone. |
 
-## 📸 Screenshots
+## Screenshots
 
-| Home — the latest filing read, its headline and its flags | The filing page — headline, flags, connection map, source panel |
-|---|---|
-| ![Home](screenshots/home.png) | ![Filing](screenshots/filing.png) |
+<table>
+  <tr>
+    <td width="50%" valign="top"><img src="screenshots/home.png" alt="Home"><br><sub><b>Home</b> — the latest filing read, its headline and its flags.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/filing.png" alt="Filing page"><br><sub><b>Filing</b> — headline, then what stands out, one card per rule with its page.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="screenshots/map.png" alt="Connection map"><br><sub><b>Who is connected</b> — promoters, directors, group companies, bankers and auditors. Red is business money, thickness by amount.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/lists.png" alt="Lists"><br><sub><b>Everything Footnote found</b> — related-party money, people, advisers, cases, use of the money, financials.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="screenshots/pdf-page.png" alt="PDF page with the quote highlighted"><br><sub><b>The source</b> — page 74 of the real filing, with the quoted row highlighted.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/entity.png" alt="Entity page"><br><sub><b>A person across filings</b> — matched by DIN, with the roles and cited facts from each filing.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="screenshots/add.png" alt="Add a filing"><br><sub><b>Add a filing</b> — drag and drop, live steps, counters of what was found.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/method.png" alt="Method"><br><sub><b>Method</b> — how it reads, extracts, links and checks, and what it is not.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="screenshots/dark.png" alt="Dark mode"><br><sub><b>Dark mode</b> — follows the system, or the header toggle.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/home-filings.png" alt="How it works"><br><sub><b>How it works</b> — read, map, prove, then the filings already read.</sub></td>
+  </tr>
+</table>
 
-| Who is connected — deterministic map, red for business money | What stands out — one card per rule, with the page |
-|---|---|
-| ![Connection map](screenshots/map.png) | ![Flags](screenshots/flags.png) |
+<p align="center">
+  <img src="screenshots/phone-home.png" alt="Phone: home" width="250">
+  &nbsp;&nbsp;&nbsp;
+  <img src="screenshots/phone-filing.png" alt="Phone: filing" width="250">
+  <br>
+  <sub><b>Phone</b> — the company on top, two columns below, and the amount inside each box.</sub>
+</p>
 
-| Everything Footnote found — related-party money, people, advisers, cases | The source — real PDF page 74, quote highlighted |
-|---|---|
-| ![Lists](screenshots/lists.png) | ![PDF page with the quote highlighted](screenshots/pdf-page.png) |
-
-| A person across filings, matched by DIN | Method — how it reads, extracts, links and checks |
-|---|---|
-| ![Entity page](screenshots/entity.png) | ![Method](screenshots/method.png) |
-
-| Add a filing — drag and drop, live steps, live counters | Dark mode |
-|---|---|
-| ![Add](screenshots/add.png) | ![Dark mode](screenshots/filing-dark.png) |
-
-| Phone — home | Phone — filing |
-|---|---|
-| ![Phone home](screenshots/phone-home.png) | ![Phone filing](screenshots/phone-filing.png) |
-
-## 📈 A real filing, end to end
+## A real filing, end to end
 
 The first run on a real offer document, 22 Oct 2026: **Annu Projects Limited**, Red Herring
 Prospectus dated 18 Aug 2026, **462 pages**, mainboard, from SEBI's site.
@@ -96,21 +103,21 @@ Prospectus dated 18 Aug 2026, **462 pages**, mainboard, from SEBI's site.
 
 ### Accuracy check against pages read by hand
 
-| Item | Footnote | ✓ |
+| Item | Footnote | Correct |
 |---|---|---|
-| Promoters | Sanjay Kumar Sarraf and Krishna Ranjan, together **87.64%** | ✅ |
-| Directors' DINs | 01174144, 01265320, 03370404, 00996242, 09698462, 00701892 | ✅ all six |
-| Lead manager | Mefcom Capital Markets, INM000000016 | ✅ |
-| Registrar, legal counsel, syndicate | KFin (INR000000221), Dentons Link Legal, Mefcom Securities | ✅ |
-| Auditor change | SCAN Associates resigned 23 May 2024 | ✅ |
-| Group companies | Opticon Pipes, Terragon Techno Machines, Balaji Travco, Ann Projects | ✅ |
-| FY26 related-party amounts | ₹33.78 M, 27.82 M, 24.24 M, 15.44 M, 14.31 M | ✅ to the decimal |
-| Use of IPO money | Capex ₹15.41 Cr, working capital ₹115 Cr, GCP to be decided | ✅ |
+| Promoters | Sanjay Kumar Sarraf and Krishna Ranjan, together **87.64%** | yes |
+| Directors' DINs | 01174144, 01265320, 03370404, 00996242, 09698462, 00701892 | yes, all six |
+| Lead manager | Mefcom Capital Markets, INM000000016 | yes |
+| Registrar, legal counsel, syndicate | KFin (INR000000221), Dentons Link Legal, Mefcom Securities | yes |
+| Auditor change | SCAN Associates resigned 23 May 2024 | yes |
+| Group companies | Opticon Pipes, Terragon Techno Machines, Balaji Travco, Ann Projects | yes |
+| FY26 related-party amounts | ₹33.78 M, 27.82 M, 24.24 M, 15.44 M, 14.31 M | yes, to the decimal |
+| Use of IPO money | Capex ₹15.41 Cr, working capital ₹115 Cr, GCP to be decided | yes |
 
 The full write-up, including the seven bugs the run exposed and their fixes, is in
 [docs/real-filing-test.md](docs/real-filing-test.md).
 
-## 🧱 Tech stack
+## Tech stack
 
 | Layer | Choice | Why |
 |---|---|---|
@@ -125,7 +132,7 @@ The full write-up, including the seven bugs the run exposed and their fixes, is 
 | PDF viewer | pdf.js 4.10, lazy-loaded | Main bundle stays at **238 kB**; the viewer chunk (338 kB) loads only when a page is opened. |
 | Redaction | `ingest.redact()` | PAN, Aadhaar and home addresses are scrubbed before anything is stored. |
 
-## 🚀 Quickstart
+## Quickstart
 
 Needs **Python 3.10+** and **Node 20+**.
 
@@ -172,7 +179,7 @@ amount units, quote verification, PAN redaction, DIN-based matching, every flag 
 cross-filing links, and the API. CI additionally runs the frontend lint and build, on Python
 3.10 and 3.12.
 
-## 📁 Project structure
+## Project structure
 
 ```
 footnote/
@@ -180,8 +187,8 @@ footnote/
 │   ├── main.py                   FastAPI app, API routes, SPA and PDF serving
 │   ├── footnote/
 │   │   ├── config.py             settings and flag thresholds from env
-│   │   ├── llm.py                OpenAI-compatible client, session header,  thinking strip
-│   │   ├── pdftext.py            page text, TOC parsing, printed→PDF page offset, sections
+│   │   ├── llm.py                OpenAI-compatible client, session header, think-tag strip
+│   │   ├── pdftext.py            page text, TOC parsing, printed to PDF page offset, sections
 │   │   ├── extract.py            per-section prompt specs, chunk jobs, parallel run
 │   │   ├── ingest.py             Ingestor, Normaliser, verify(), redact(), relink(), CLI
 │   │   ├── store.py              SQLite schema and name normalisation
@@ -190,13 +197,13 @@ footnote/
 │   │   └── retrieve.py           small TF-IDF index, no embedding API
 │   ├── tests/                    16 tests on hand-built PDFs and a FakeLLM
 │   ├── requirements.txt          runtime pins
-│   └── requirements-dev.txt      + pytest, httpx
+│   └── requirements-dev.txt      plus pytest and httpx
 ├── frontend/
 │   └── src/
 │       ├── App.jsx               shell, search, theme, lazy PDF viewer
 │       ├── nav.js, router.jsx    28-line History router
 │       ├── MapView.jsx           deterministic connection map
-│       ├── PdfViewer.jsx         pdf.js + quote highlighting
+│       ├── PdfViewer.jsx         pdf.js plus quote highlighting
 │       ├── pages/                Home, Filing, Entity, Add, Method
 │       └── styles.css            design tokens, light and dark
 ├── data/
@@ -208,12 +215,12 @@ footnote/
 │   ├── red-flag-rules.md         every rule, its threshold and its severity
 │   ├── data-model.md             SQLite tables, fact kinds, DIN/CIN matching
 │   └── architecture.md           pipeline, module map, API, deploy shape
-├── .github/workflows/ci.yml      backend tests + frontend lint and build
+├── .github/workflows/ci.yml      backend tests plus frontend lint and build
 ├── railway.json, nixpacks.toml   one-service deploy
 └── LICENSE, CONTRIBUTING.md, CHANGELOG.md, THIRD-PARTY-NOTICES.md
 ```
 
-## 🔌 API
+## API
 
 | Method | Path | What |
 |---|---|---|
@@ -227,7 +234,7 @@ footnote/
 | GET | `/api/entities/{id}` | everywhere a person or company appears |
 | GET | `/api/search?q=` | filings and entities by name, DIN, CIN or registration |
 
-## ⚖️ Limits, and what this is not
+## Limits, and what this is not
 
 - **Extraction can miss or misread items.** That is why every line links to its page and
   unverified quotes are labelled. Read the page before you believe the line.
@@ -243,13 +250,13 @@ footnote/
 - The current LLM is a shared low-cost endpoint; switch to a pay-as-you-go provider before
   any public deployment.
 
-## 🛡️ Privacy
+## Privacy
 
 Filing PDFs are public documents, but they print PAN, Aadhaar and home addresses. Footnote
 scrubs those before anything is stored. Uploads are off by default on a public deployment
 (`ALLOW_UPLOADS=0`), which serves only filings already read.
 
-## 🚀 Deploy
+## Deploy
 
 One service: Vite builds into `backend/static` and FastAPI serves both. `railway.json` and
 `nixpacks.toml` (Node 20 + Python 3.12) are included.
@@ -262,7 +269,7 @@ cd ../backend && uvicorn main:app     # serves API, UI and PDFs
 Set `LLM_API_KEY` to allow uploads and questions, and `ALLOW_UPLOADS=0` to keep the public
 site read-only.
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] Publish as **`prutxvi/footnote`** (this repository)
 - [ ] Populate `data/sebi_orders.json` so the lead-manager check fires
@@ -270,12 +277,12 @@ site read-only.
 - [ ] Switch the LLM to a pay-as-you-go provider
 - [ ] Deploy the read-only instance
 
-## 🤝 Contributing
+## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Run `pytest` in `backend/` and `npm run lint` in
 `frontend/` before opening a pull request.
 
-## 📄 License
+## License
 
 MIT © 2026 Toganti Pruthvi Raj — see [LICENSE](LICENSE). Third-party licences, including the
 fonts and pdf.js, are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
