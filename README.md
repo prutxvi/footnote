@@ -18,7 +18,7 @@ it came from, with the quote highlighted.
 
 <p>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
-  <a href="https://github.com/prutxvi/GraphMind/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/prutxvi/GraphMind/actions/workflows/ci.yml/badge.svg?branch=footnote"></a>
+  <a href="https://github.com/prutxvi/footnote/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/prutxvi/footnote/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="Python 3.10 and 3.12" src="https://img.shields.io/badge/Python-3.10%20%7C%203.12-blue?logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white">
   <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white">
@@ -175,7 +175,7 @@ cross-filing links, and the API. CI additionally runs the frontend lint and buil
 ## 📁 Project structure
 
 ```
-GraphMind/                        (repo rename to footnote pending)
+footnote/
 ├── backend/
 │   ├── main.py                   FastAPI app, API routes, SPA and PDF serving
 │   ├── footnote/
@@ -264,7 +264,7 @@ site read-only.
 
 ## 🗺️ Roadmap
 
-- [ ] Rename the GitHub repo `GraphMind` → `footnote`, push this branch
+- [x] Publish as **`prutxvi/footnote`** (this repository)
 - [ ] Populate `data/sebi_orders.json` so the lead-manager check fires
 - [ ] Test the 3 SEBI-acted SME filings (Synoptics, Varyaa, Nirman Agri) — the launch story
 - [ ] Switch the LLM to a pay-as-you-go provider

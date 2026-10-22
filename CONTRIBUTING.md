@@ -17,8 +17,8 @@ matching, and more filings read and checked.
 ## Set up
 
 ```bash
-git clone https://github.com/prutxvi/GraphMind.git
-cd GraphMind
+git clone https://github.com/prutxvi/footnote.git
+cd footnote
 git checkout -b feature/your-feature-name
 
 # Backend

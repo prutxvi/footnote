@@ -5,6 +5,7 @@ Notable changes to Footnote. Dates are the day the work landed.
 ## [Unreleased]
 
 ### Added
+- Published as `prutxvi/footnote` (the previous GraphMind repository keeps the old 3D-graph code).
 - Professional README with badges, real screenshots and the measured results of the first
   real filing run.
 - `docs/`: architecture, red-flag rules, data model and entity matching, and the full
