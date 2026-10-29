@@ -5,6 +5,27 @@ Notable changes to Footnote. Dates are the day the work landed.
 ## [Unreleased]
 
 ### Added
+- UI redesign: a home hero with the strongest read, a ledger of totals, a three-step "how it
+  checks" strip and a verified-quote meter on every filing card; on the filing page,
+  breadcrumbs, a lede, open-the-filing and ask actions, a 4-cell ledger and a sticky section
+  nav that follows the scroll; `⌘K`, `Ctrl+K` and `/` focus search.
+- `docs/sebi-test.md`: the Varyaa Creations run, the first of three IPOs SEBI later acted
+  on, with a public write-up at footnote-story.vercel.app.
+
+### Changed
+- `screenshots/`: re-captured on the new UI from the public Varyaa Creations prospectus, at
+  2x (2880x1800 desktop, 780x1688 phone).
+- README: a contents list, the SEBI test results, a pipeline diagram, and an accurate deploy
+  step (the build is copied into `backend/static`, Vite does not write there itself).
+
+### Fixed
+- Connection map: adviser names in the top row overlapped their neighbours. Labels now fit
+  the width of their own box, with capitals measured wider, and the "+N more" note sits
+  under the row instead of running off the edge.
+
+## [0.3.1] — 2026-10-23 — README, docs and screenshots
+
+### Added
 - Published as `prutxvi/footnote` (the previous GraphMind repository keeps the old 3D-graph code).
 - Professional README with badges, real screenshots and the measured results of the first
   real filing run.

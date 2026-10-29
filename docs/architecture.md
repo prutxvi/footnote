@@ -64,7 +64,7 @@ lazy-loaded, so a visitor who never opens a page never downloads it.
 
 ## Deploy shape
 
-One service: Vite builds into `backend/static`, and FastAPI serves both. `railway.json` and
+One service: the Vite build (`frontend/dist`) is copied into `backend/static`, and FastAPI serves both. `railway.json` and
 `nixpacks.toml` (Node 20 + Python 3.12) are included. Set `ALLOW_UPLOADS=0` for a public
 read-only site that serves only filings already read.
 

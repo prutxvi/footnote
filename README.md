@@ -6,14 +6,24 @@
 
 An Indian IPO offer document (DRHP, RHP or prospectus) runs 300 to 800 pages. Who owns the
 company, which family firms it trades with, who its bankers are, and which cases it is
-fighting are all disclosed — scattered across sections almost nobody reads.
+fighting are all disclosed, scattered across sections almost nobody reads.
 
-Footnote reads the filing, maps **who is connected to the company and where the money
-goes**, runs fixed checks over what it finds, and links every line to the page of the PDF
-it came from, with the quote highlighted.
+Footnote reads the whole filing, maps **who is connected to the company and where the money
+goes**, runs fixed checks over what it finds, and links every line to the page of the PDF it
+came from, with the quote highlighted.
 
 <p>
-  <img src="screenshots/home.png" alt="Footnote home page: the latest filing read, its headline and its flags" width="860">
+  <a href="https://footnote-story.vercel.app"><b>Read the case study</b></a>
+  &nbsp;·&nbsp;
+  <a href="#quickstart">Run it locally</a>
+  &nbsp;·&nbsp;
+  <a href="docs/architecture.md">Architecture</a>
+  &nbsp;·&nbsp;
+  <a href="docs/red-flag-rules.md">The rules</a>
+</p>
+
+<p>
+  <img src="screenshots/home.png" alt="Footnote home page: a hero, the strongest read, and a ledger of totals" width="880">
 </p>
 
 <p>
@@ -23,48 +33,58 @@ it came from, with the quote highlighted.
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white">
   <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white">
   <img alt="Tests: 16 passing" src="https://img.shields.io/badge/tests-16%20passing-3fb950">
-  <img alt="Quotes verified: 120 of 122" src="https://img.shields.io/badge/quotes%20verified-120%20of%20122-22d3ee">
-  <img alt="No embedding API, no vector database" src="https://img.shields.io/badge/vector%20DB-none-blueviolet">
+  <img alt="Quotes verified: 201 of 203" src="https://img.shields.io/badge/quotes%20verified-201%20of%20203-22d3ee">
+  <img alt="No vector database" src="https://img.shields.io/badge/vector%20DB-none-blueviolet">
 </p>
 
 </div>
 
 ---
 
+## Contents
+
+- [What you get for each filing](#what-you-get-for-each-filing)
+- [Screenshots](#screenshots)
+- [Results on real filings](#results-on-real-filings)
+- [How it works](#how-it-works)
+- [Quickstart](#quickstart)
+- [Project structure](#project-structure)
+- [API](#api)
+- [Limits, and what this is not](#limits-and-what-this-is-not)
+- [Roadmap](#roadmap)
+
 ## What you get for each filing
 
 | | |
 |---|---|
-| **A one-line headline** | Written from the strongest finding, not a summary. *"Annu Projects did ₹12.95 Cr of business with its own related companies in Fiscal 2026, 5.36% of its revenue."* |
+| **A one-line headline** | Written from the strongest finding, not a summary, or a plain statement that nothing tripped the checks. |
 | **Red flags from fixed rules** | Related-party business as a share of revenue, money lent to related parties, IPO money going to related parties, auditor resignations, pending criminal or regulatory cases, the lead manager's record, and profit without operating cash. No model decides what is suspicious. |
-| **A connection map** | Promoters and directors on the left, group and related companies on the right, bankers and auditors on top, the company in the centre. Money is drawn in red with thickness by amount; salaries and sitting fees are thin grey *pay* lines. Deterministic layout, not a force blob. |
+| **A connection map** | Promoters and directors on the left, group and related companies on the right, bankers and auditors on top, the company in the centre. Money is drawn in red with thickness by amount. Deterministic layout, not a force blob. |
 | **The source, always** | Click any flag, line, box or page number and the real PDF page opens with the quote highlighted. Every quote is checked word for word against its page; anything not found is marked **unverified** and never silently trusted. |
-| **People and companies across IPOs** | People link only by **DIN**, companies by **CIN**, **SEBI registration** or name — so "everywhere this banker appears" is one click, and names that collide do not merge. |
-| **Questions with citations** | Answers use only the filing and cite `S1 · p.73`-style sources. Retrieval is TF-IDF over the filing's own facts and pages — no embedding API, no vector database. |
-| **Paper-and-ink UI** | An investigative report, not a hacker terminal: serif headlines, paper surfaces, red only where money or risk is involved, dark mode, and a layout that works on a phone. |
+| **People and companies across IPOs** | People link only by **DIN**, companies by **CIN**, **SEBI registration** or name, so "everywhere this banker appears" is one click, and names that collide do not merge. |
+| **Questions with citations** | Answers use only the filing and cite `S1 · p.73`-style sources. Retrieval is TF-IDF over the filing's own facts and pages: no embedding API, no vector database. |
+| **An investigative-report UI** | Serif headlines, paper surfaces, red only where money or risk is involved. A ledger of totals, a sticky section nav, `⌘K` search, dark mode, and a layout that works on a phone. |
 
 ## Screenshots
 
+All captured from the running app on the Varyaa Creations prospectus, a public BSE SME filing.
+
 <table>
   <tr>
-    <td width="50%" valign="top"><img src="screenshots/home.png" alt="Home"><br><sub><b>Home</b> — the latest filing read, its headline and its flags.</sub></td>
-    <td width="50%" valign="top"><img src="screenshots/filing.png" alt="Filing page"><br><sub><b>Filing</b> — headline, then what stands out, one card per rule with its page.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/filing.png" alt="Filing page"><br><sub><b>Filing</b>: the headline, a ledger of what was read and verified, and a section nav that follows the scroll.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/map.png" alt="Connection map"><br><sub><b>Who is connected</b>: promoters, directors, group companies, bankers and auditors, with the selected flag's sources on the right.</sub></td>
   </tr>
   <tr>
-    <td width="50%" valign="top"><img src="screenshots/map.png" alt="Connection map"><br><sub><b>Who is connected</b> — promoters, directors, group companies, bankers and auditors. Red is business money, thickness by amount.</sub></td>
-    <td width="50%" valign="top"><img src="screenshots/lists.png" alt="Lists"><br><sub><b>Everything Footnote found</b> — related-party money, people, advisers, cases, use of the money, financials.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/pdf-page.png" alt="PDF page with the quote highlighted"><br><sub><b>The source</b>: page 67 of the real prospectus, the quoted sentence highlighted.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/lists.png" alt="Lists"><br><sub><b>Everything Footnote found</b>: people with DINs, group companies, advisers, cases, use of the money, financials.</sub></td>
   </tr>
   <tr>
-    <td width="50%" valign="top"><img src="screenshots/pdf-page.png" alt="PDF page with the quote highlighted"><br><sub><b>The source</b> — page 74 of the real filing, with the quoted row highlighted.</sub></td>
-    <td width="50%" valign="top"><img src="screenshots/entity.png" alt="Entity page"><br><sub><b>A person across filings</b> — matched by DIN, with the roles and cited facts from each filing.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/home-filings.png" alt="How it checks"><br><sub><b>How it checks</b>: read the whole filing, map the connections, prove every line.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/entity.png" alt="Entity page"><br><sub><b>A banker across filings</b>: matched by SEBI registration, with the role and page from each filing.</sub></td>
   </tr>
   <tr>
-    <td width="50%" valign="top"><img src="screenshots/add.png" alt="Add a filing"><br><sub><b>Add a filing</b> — drag and drop, live steps, counters of what was found.</sub></td>
-    <td width="50%" valign="top"><img src="screenshots/method.png" alt="Method"><br><sub><b>Method</b> — how it reads, extracts, links and checks, and what it is not.</sub></td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top"><img src="screenshots/dark.png" alt="Dark mode"><br><sub><b>Dark mode</b> — follows the system, or the header toggle.</sub></td>
-    <td width="50%" valign="top"><img src="screenshots/home-filings.png" alt="How it works"><br><sub><b>How it works</b> — read, map, prove, then the filings already read.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/add.png" alt="Add a filing"><br><sub><b>Add a filing</b>: drag and drop, live steps, counters of what was found.</sub></td>
+    <td width="50%" valign="top"><img src="screenshots/dark.png" alt="Dark mode"><br><sub><b>Dark mode</b>: follows the system, or the header toggle.</sub></td>
   </tr>
 </table>
 
@@ -73,70 +93,84 @@ it came from, with the quote highlighted.
   &nbsp;&nbsp;&nbsp;
   <img src="screenshots/phone-filing.png" alt="Phone: filing" width="250">
   <br>
-  <sub><b>Phone</b> — the company on top, two columns below, and the amount inside each box.</sub>
+  <sub><b>Phone</b>: the ledger folds to two columns and the section nav scrolls sideways.</sub>
 </p>
 
-## A real filing, end to end
+## Results on real filings
 
-The first run on a real offer document, 22 Oct 2026: **Annu Projects Limited**, Red Herring
-Prospectus dated 18 Aug 2026, **462 pages**, mainboard, from SEBI's site.
+### The SEBI test: an IPO SEBI later acted on
+
+**Varyaa Creations Limited**, BSE SME, ₹20.10 Cr, 294-page prospectus. SEBI later issued an
+interim order alleging that ₹14 Cr left the IPO account on listing day. That order was
+revoked on 29 Dec 2025.
 
 | | |
 |---|---|
-| Sections found from the filing's own table of contents | **9 of 9** (page offset 3) |
+| Time | **84 s** |
+| Facts extracted | **81**, all **81 quotes found word for word** |
+| Flags | 7 pending tax cases (*for context*); no IPO money to related parties stated (*reassuring*) |
+
+**Footnote found nothing alarming, and that was the right answer for the document.** The
+money SEBI described went to entities the prospectus never names, after it was printed. What
+the prospectus did contain was the yardstick: issue expenses of **₹60 lakh** (p.67), against
+the ₹14 Cr SEBI says left as "IPO-related expenses". That figure is now the next field to
+extract.
+
+Full write-up: **[The SEBI test](https://footnote-story.vercel.app)** ·
+run notes: [docs/sebi-test.md](docs/sebi-test.md)
+
+### Accuracy on a mainboard RHP
+
+The first real run: a **462-page** mainboard Red Herring Prospectus from SEBI's site, checked
+against the pages by hand.
+
+| | |
+|---|---|
+| Sections found from the filing's own table of contents | **9 of 9** |
 | Model calls | **22** (about 40K input tokens) |
-| Wall-clock time | **2 min 22 s** |
-| Facts extracted | **122** |
-| Facts whose quote was found word for word on the page | **120 (98.4%)** |
+| Time | **2 min 22 s** |
+| Facts extracted | **122**, of which **120 (98.4%)** found word for word |
 | Connection map | **34 nodes, 55 edges** |
-| Tests | **16 passing in 0.5 s**, no network and no API key |
+| Hand check | promoters and holding, all six director DINs, lead manager and registrar registrations, auditor change, group companies, related-party amounts to the decimal, and use of proceeds: all correct |
 
-### What it flagged
-
-| Flag | Severity | Finding |
-|---|---|---|
-| Business with related companies | Worth reading | **5.36% of revenue** — ₹12.95 Cr of sales, purchases and services with 2 related companies in FY26. Largest: Terragon Techno Machines, ₹7.55 Cr. |
-| Profit without cash | Worth reading | **₹21.10 Cr profit in FY25 while operations used ₹35.38 Cr of cash.** |
-| Auditor resigned | Worth reading | SCAN Associates resigned on 23 May 2024, "pre-occupation in other assignments". |
-| Pending cases | For context | **16 cases** against the company, promoters and directors (₹2.13 Cr at stake where stated), mostly tax. |
-| IPO money to related parties | Reassuring | The filing states no proceeds will be paid to promoters, directors or group companies. |
-
-### Accuracy check against pages read by hand
-
-| Item | Footnote | Correct |
-|---|---|---|
-| Promoters | Sanjay Kumar Sarraf and Krishna Ranjan, together **87.64%** | yes |
-| Directors' DINs | 01174144, 01265320, 03370404, 00996242, 09698462, 00701892 | yes, all six |
-| Lead manager | Mefcom Capital Markets, INM000000016 | yes |
-| Registrar, legal counsel, syndicate | KFin (INR000000221), Dentons Link Legal, Mefcom Securities | yes |
-| Auditor change | SCAN Associates resigned 23 May 2024 | yes |
-| Group companies | Opticon Pipes, Terragon Techno Machines, Balaji Travco, Ann Projects | yes |
-| FY26 related-party amounts | ₹33.78 M, 27.82 M, 24.24 M, 15.44 M, 14.31 M | yes, to the decimal |
-| Use of IPO money | Capex ₹15.41 Cr, working capital ₹115 Cr, GCP to be decided | yes |
-
-The full write-up, including the seven bugs the run exposed and their fixes, is in
+The seven bugs that run exposed, and their fixes, are in
 [docs/real-filing-test.md](docs/real-filing-test.md).
 
-## Tech stack
+## How it works
+
+```
+PDF ──► pypdf text + TOC ──► sections ──► LLM, fixed fields per section
+                                              │
+             SQLite ◄── verify every quote ◄──┘   (redact PAN / Aadhaar first)
+               │
+               ├──► link people by DIN, companies by CIN / SEBI registration
+               ├──► fixed rules ──► flags + headline
+               └──► graph, lists, TF-IDF index ──► FastAPI ──► React UI + pdf.js
+```
 
 | Layer | Choice | Why |
 |---|---|---|
-| PDF text and TOC | `pypdf` | Pure Python, no system libraries, works on Railway. |
-| Extraction | Any OpenAI-compatible endpoint (`openai` SDK) | Fixed-field prompts per section, ~9,000-character chunks, 4 in parallel, JSON repair, amount units in lakh / million / crore. |
+| PDF text and TOC | `pypdf` | Pure Python, no system libraries. Finds the printed-to-PDF page offset. |
+| Extraction | Any OpenAI-compatible endpoint | Fixed-field prompts per section, ~9,000-character chunks, 4 in parallel, JSON repair, amounts in lakh / million / crore. |
 | Verification | `ingest.Normaliser.verify()` | Every quote is re-found on its page; failures are labelled, not dropped. |
-| Storage | SQLite (`store.py`) | One file, no server. Tables for filings, pages, entities, entity keys, facts and raw extractions. |
+| Storage | SQLite | One file, no server. Filings, pages, entities, entity keys, facts and raw extractions. |
 | Rules | `report.py` | Thresholds in `config.py`; a flag is a rule over cited facts, never a model opinion. |
-| Retrieval | TF-IDF (`retrieve.py`) | No embedding API and no vector database to run or pay for. |
+| Retrieval | TF-IDF | No embedding API and no vector database to run or pay for. |
 | API | FastAPI + uvicorn | Uploads run in a background thread with live progress. |
-| UI | React 19 + Vite 7, no UI framework | 15 source files, a 28-line History router, tokens in one CSS file. |
-| PDF viewer | pdf.js 4.10, lazy-loaded | Main bundle stays at **238 kB**; the viewer chunk (338 kB) loads only when a page is opened. |
+| UI | React 19 + Vite 7, no UI framework | A 28-line History router and design tokens in one CSS file. |
+| PDF viewer | pdf.js 4.10, lazy-loaded | Main bundle **243 kB**; the viewer chunk (338 kB) loads only when a page is opened. |
 | Redaction | `ingest.redact()` | PAN, Aadhaar and home addresses are scrubbed before anything is stored. |
+
+More in [docs/architecture.md](docs/architecture.md), [docs/data-model.md](docs/data-model.md)
+and [docs/red-flag-rules.md](docs/red-flag-rules.md).
 
 ## Quickstart
 
 Needs **Python 3.10+** and **Node 20+**.
 
 ```bash
+git clone https://github.com/prutxvi/footnote.git && cd footnote
+
 # 1. Backend
 cd backend
 python -m venv .venv && source .venv/bin/activate
@@ -158,14 +192,14 @@ python -m footnote.ingest ~/Downloads/filings/*.pdf       # read a folder
 python -m footnote.ingest --relink <filing-id>            # re-run rules and matching, no model calls
 ```
 
-Download filings by hand from SEBI, NSE Emerge or BSE SME. **NSE's terms prohibit automated
+Download filings by hand from SEBI, BSE SME or NSE Emerge. **NSE's terms prohibit automated
 collection**, so Footnote never scrapes them.
 
 ### The lead-manager check
 
-It reads `data/sebi_orders.json`, a hand-checked list. Copy
-`data/sebi_orders.example.json`, add one entry per SEBI order with its URL, and the flag
-appears on every filing that banker handled. It is empty today, so that check cannot fire yet.
+It reads `data/sebi_orders.json`, a hand-checked list. Copy `data/sebi_orders.example.json`,
+add one entry per SEBI order with its URL, and the flag appears on every filing that banker
+handled.
 
 ### Tests
 
@@ -176,8 +210,8 @@ cd backend && pytest
 The suite builds offer documents as real PDFs and runs the whole pipeline on a `FakeLLM`, so
 it needs no network and no key. It covers table-of-contents parsing and the page offset,
 amount units, quote verification, PAN redaction, DIN-based matching, every flag rule,
-cross-filing links, and the API. CI additionally runs the frontend lint and build, on Python
-3.10 and 3.12.
+cross-filing links, and the API. CI also runs the frontend lint and build, on Python 3.10 and
+3.12.
 
 ## Project structure
 
@@ -187,37 +221,28 @@ footnote/
 │   ├── main.py                   FastAPI app, API routes, SPA and PDF serving
 │   ├── footnote/
 │   │   ├── config.py             settings and flag thresholds from env
-│   │   ├── llm.py                OpenAI-compatible client, session header, think-tag strip
-│   │   ├── pdftext.py            page text, TOC parsing, printed to PDF page offset, sections
+│   │   ├── llm.py                OpenAI-compatible client
+│   │   ├── pdftext.py            page text, TOC parsing, page offset, sections
 │   │   ├── extract.py            per-section prompt specs, chunk jobs, parallel run
 │   │   ├── ingest.py             Ingestor, Normaliser, verify(), redact(), relink(), CLI
 │   │   ├── store.py              SQLite schema and name normalisation
 │   │   ├── report.py             flags, headline, graph, lists, entity_report()
-│   │   ├── chat.py               per-filing TF-IDF indexes, numbered sources, citations
-│   │   └── retrieve.py           small TF-IDF index, no embedding API
-│   ├── tests/                    16 tests on hand-built PDFs and a FakeLLM
-│   ├── requirements.txt          runtime pins
-│   └── requirements-dev.txt      plus pytest and httpx
-├── frontend/
-│   └── src/
-│       ├── App.jsx               shell, search, theme, lazy PDF viewer
-│       ├── nav.js, router.jsx    28-line History router
-│       ├── MapView.jsx           deterministic connection map
-│       ├── PdfViewer.jsx         pdf.js plus quote highlighting
-│       ├── pages/                Home, Filing, Entity, Add, Method
-│       └── styles.css            design tokens, light and dark
+│   │   ├── chat.py               per-filing indexes, numbered sources, citations
+│   │   └── retrieve.py           small TF-IDF index
+│   └── tests/                    16 tests on hand-built PDFs and a FakeLLM
+├── frontend/src/
+│   ├── App.jsx                   shell, search (⌘K), theme, lazy PDF viewer
+│   ├── nav.js, router.jsx        28-line History router
+│   ├── MapView.jsx               deterministic connection map
+│   ├── PdfViewer.jsx             pdf.js plus quote highlighting
+│   ├── pages/                    Home, Filing, Entity, Add, Method
+│   └── styles.css                design tokens, light and dark
 ├── data/
-│   ├── sebi_orders.example.json  format for the hand-checked order list
-│   └── filings/                  local PDFs (git-ignored)
-├── screenshots/                  the images above, captured from the running app
-├── docs/
-│   ├── real-filing-test.md       the Annu Projects run, checked by hand
-│   ├── red-flag-rules.md         every rule, its threshold and its severity
-│   ├── data-model.md             SQLite tables, fact kinds, DIN/CIN matching
-│   └── architecture.md           pipeline, module map, API, deploy shape
+│   └── sebi_orders.example.json  format for the hand-checked order list
+├── docs/                         architecture, data model, rules, real-filing and SEBI tests
+├── screenshots/                  the images above
 ├── .github/workflows/ci.yml      backend tests plus frontend lint and build
-├── railway.json, nixpacks.toml   one-service deploy
-└── LICENSE, CONTRIBUTING.md, CHANGELOG.md, THIRD-PARTY-NOTICES.md
+└── railway.json, nixpacks.toml   one-service deploy
 ```
 
 ## API
@@ -236,19 +261,17 @@ footnote/
 
 ## Limits, and what this is not
 
+- **A prospectus cannot show money that moves after it is printed.** Footnote reads what was
+  disclosed; the SEBI test above is the clearest example.
 - **Extraction can miss or misread items.** That is why every line links to its page and
   unverified quotes are labelled. Read the page before you believe the line.
 - **A flag is a reason to read, not proof of wrongdoing.** Related-party transactions are
-  legal and often ordinary. Footnote describes what the company disclosed.
+  legal and often ordinary.
 - **Not investment advice.**
 - Scanned (image-only) PDFs need OCR first.
 - People without a DIN in the filing are **deliberately not linked** across filings, because
-  names collide. On Annu Projects, "Rajan" (a director, with a DIN) and "Rajan Nandlal" (paid
-  a salary, no DIN) are probably the same person and are kept apart on purpose.
-- 2 of the 122 facts on the real run are unverified: the model stitched separate lines
-  together, and Footnote says so instead of hiding it.
-- The current LLM is a shared low-cost endpoint; switch to a pay-as-you-go provider before
-  any public deployment.
+  names collide. Two rows that are probably the same person stay apart rather than risk a
+  wrong merge.
 
 ## Privacy
 
@@ -258,24 +281,27 @@ scrubs those before anything is stored. Uploads are off by default on a public d
 
 ## Deploy
 
-One service: Vite builds into `backend/static` and FastAPI serves both. `railway.json` and
-`nixpacks.toml` (Node 20 + Python 3.12) are included.
+One service: the frontend build is copied into `backend/static` and FastAPI serves both.
+`railway.json` and `nixpacks.toml` (Node 20 + Python 3.12) do this for you.
 
 ```bash
-cd frontend && npm run build          # writes into backend/static
+cd frontend && npm run build && rm -rf ../backend/static && cp -r dist ../backend/static
 cd ../backend && uvicorn main:app     # serves API, UI and PDFs
 ```
 
-Set `LLM_API_KEY` to allow uploads and questions, and `ALLOW_UPLOADS=0` to keep the public
+Set `LLM_API_KEY` to allow uploads and questions, and `ALLOW_UPLOADS=0` to keep a public
 site read-only.
 
 ## Roadmap
 
-- [x] Publish as **`prutxvi/footnote`** (this repository)
+- [x] Publish as `prutxvi/footnote`
+- [x] SEBI test 1 of 3: Varyaa Creations, with a [public write-up](https://footnote-story.vercel.app)
+- [x] UI redesign: ledger, section nav, `⌘K` search
+- [ ] SEBI tests 2 and 3: Synoptics Technologies and Nirman Agri Genetics
+- [ ] Extract disclosed issue expenses as their own field
+- [ ] A lead-manager page: every IPO a banker handled, with any SEBI orders
 - [ ] Populate `data/sebi_orders.json` so the lead-manager check fires
-- [ ] Test the 3 SEBI-acted SME filings (Synoptics, Varyaa, Nirman Agri) — the launch story
-- [ ] Switch the LLM to a pay-as-you-go provider
-- [ ] Deploy the read-only instance
+- [ ] Deploy a read-only instance
 
 ## Contributing
 
@@ -284,8 +310,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Run `pytest` in `backend/` and `npm run 
 
 ## License
 
-MIT © 2026 Toganti Pruthvi Raj — see [LICENSE](LICENSE). Third-party licences, including the
-fonts and pdf.js, are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+MIT © 2026 Toganti Pruthvi Raj. See [LICENSE](LICENSE). Third-party licences, including the
+fonts and pdf.js, are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ---
 

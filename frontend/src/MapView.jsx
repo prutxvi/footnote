@@ -70,7 +70,7 @@ function layout(graph, compact) {
     const shownTop = top.slice(0, MAX_TOP);
     const span = shownTop.length * topW + Math.max(shownTop.length - 1, 0) * 20;
     shownTop.forEach((n, i) => pos.set(n.id, { x: (W - span) / 2 + i * (topW + 20), y: 16, w: topW, h: 48, side: 'top' }));
-    if (top.length > MAX_TOP) extra.push({ side: 'top', count: top.length - MAX_TOP, x: (W + span) / 2 + 12, y: 26, w: 90 });
+    if (top.length > MAX_TOP) extra.push({ side: 'top', count: top.length - MAX_TOP, x: (W + span) / 2, y: 66, w: 0 });
     const y0 = top.length ? 140 : 24;
     const lb = place(left, 24, y0, nodeW, MAX_PER_COLUMN, 'left');
     const rb = place(right, W - 24 - nodeW, y0, nodeW, MAX_PER_COLUMN, 'right');
@@ -143,6 +143,9 @@ export default function MapView({ graph, flaggedIds, selected, onSelect }) {
     if (!n) continue;
     const isIssuer = p.side === 'center';
     const person = n.kind === 'person';
+    // Fit the label to its box: capitals run about a third wider than mixed case.
+    const caps = n.name === n.name.toUpperCase();
+    const fit = Math.min(charsName, Math.floor((p.w - 20) / (caps ? 9.8 : 7.6)));
     const adviser = p.side === 'top';
     const flagged = flaggedIds.has(id);
     const isSel = selected?.type === 'node' && selected.id === id;
@@ -164,9 +167,9 @@ export default function MapView({ graph, flaggedIds, selected, onSelect }) {
         <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={person ? p.h / 2 : 7} fill={fill} stroke={stroke}
           strokeWidth={isSel ? 3 : flagged ? 2 : 1.4} strokeDasharray={adviser ? '5 4' : undefined} />
         <text x={p.x + p.w / 2} y={p.y + p.h / 2 - 3} textAnchor="middle" fontSize={isIssuer ? 15 : 13.5} fontWeight="600"
-          fill={isIssuer ? 'var(--bg)' : 'var(--ink)'}>{clip(isIssuer ? shortName(n.name) : n.name, isIssuer ? 30 : charsName)}</text>
+          fill={isIssuer ? 'var(--bg)' : 'var(--ink)'}>{clip(isIssuer ? shortName(n.name) : n.name, isIssuer ? 30 : fit)}</text>
         <text x={p.x + p.w / 2} y={p.y + p.h / 2 + 14} textAnchor="middle" fontSize="11.5"
-          fill={isIssuer ? 'var(--bg)' : 'var(--muted)'} opacity={isIssuer ? 0.8 : 1}>{clip(role, charsName + 4)}</text>
+          fill={isIssuer ? 'var(--bg)' : 'var(--muted)'} opacity={isIssuer ? 0.8 : 1}>{clip(role, Math.floor((p.w - 16) / 6.4))}</text>
       </g>,
     );
   }
@@ -205,8 +208,8 @@ export default function MapView({ graph, flaggedIds, selected, onSelect }) {
           );
         })}
         {L.extra.map((x) => (
-          <text key={x.side} x={x.x + (x.side === 'top' ? 0 : x.w / 2)} y={x.y + 20} textAnchor={x.side === 'top' ? 'start' : 'middle'}
-            fontSize="12.5" fill="var(--muted)">+{x.count} more in the lists below</text>
+          <text key={x.side} x={x.x + (x.side === 'top' ? 0 : x.w / 2)} y={x.y + 20} textAnchor={x.side === 'top' ? 'end' : 'middle'}
+            fontSize="12.5" fill="var(--muted)" stroke="var(--surface)" strokeWidth="5" paintOrder="stroke">+{x.count} more in the lists below</text>
         ))}
       </svg>
     </div>
