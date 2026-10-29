@@ -37,6 +37,7 @@ function Search() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const box = useRef(null);
+  const input = useRef(null);
 
   useEffect(() => {
     if (q.trim().length < 2) return undefined;
@@ -45,8 +46,16 @@ function Search() {
   }, [q]);
   useEffect(() => {
     const close = (e) => { if (!box.current?.contains(e.target)) setOpen(false); };
+    // ⌘K / Ctrl+K or "/" jumps to search from anywhere.
+    const focus = (e) => {
+      const typing = /INPUT|TEXTAREA/.test(document.activeElement?.tagName);
+      if (((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') || (e.key === '/' && !typing)) {
+        e.preventDefault(); input.current?.focus();
+      }
+    };
     document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
+    document.addEventListener('keydown', focus);
+    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('keydown', focus); };
   }, []);
 
   const shown = q.trim().length >= 2 ? res : null;
@@ -69,9 +78,10 @@ function Search() {
       <div className="search-box">
         <Icon name="search" />
         <label htmlFor="search" className="sr">Search filings, people, companies or bankers</label>
-        <input id="search" type="search" placeholder="Search an IPO, promoter, DIN or merchant banker" value={q} autoComplete="off"
+        <input id="search" ref={input} type="search" placeholder="Search an IPO, promoter, DIN or merchant banker" value={q} autoComplete="off"
           role="combobox" aria-expanded={open && !!shown} aria-controls="search-results"
           onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(0); }} onFocus={() => setOpen(true)} onKeyDown={onKey} />
+        {!q && <span className="kbd" aria-hidden="true">{/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}</span>}
       </div>
       {open && shown && (
         <div className="search-results" id="search-results" role="listbox">
@@ -97,18 +107,25 @@ export default function App() {
   const open = useCallback((target) => setViewer(target), []);
   const close = useCallback(() => setViewer(null), []);
   const ctx = useMemo(() => ({ open }), [open]);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 4);
+    on(); window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, []);
+  const cur = (page) => (route.page === page ? 'page' : undefined);
 
   return (
     <ViewerContext.Provider value={ctx}>
       <a href="#content" className="sr">Skip to content</a>
-      <header className="top">
+      <header className={`top${scrolled ? ' scrolled' : ''}`}>
         <div className="wrap">
           <Link to="/" className="brand" aria-label="Footnote home"><b>Footnote<sup>1</sup></b><span>IPO filings</span></Link>
           <Search />
           <nav className="nav" aria-label="Main">
-            <Link to="/">Filings</Link>
-            <Link to="/method">Method</Link>
-            {health?.uploads && <Link to="/add">Add</Link>}
+            <Link to="/" aria-current={cur('home')}>Filings</Link>
+            <Link to="/method" aria-current={cur('method')}>Method</Link>
+            {health?.uploads && <Link to="/add" aria-current={cur('add')}>Add</Link>}
             <ThemeToggle />
           </nav>
         </div>
@@ -123,8 +140,8 @@ export default function App() {
       </div>
       <footer className="foot">
         <div className="wrap">
+          <span><b>Footnote<sup>1</sup></b>&nbsp;&nbsp;What IPOs bury in the fine print, with the page to prove it.</span>
           <span>Facts from public filings, not allegations. A flag is a reason to read, not proof of wrongdoing. Not investment advice.</span>
-          <span>Footnote · open source</span>
         </div>
       </footer>
       {viewer && (

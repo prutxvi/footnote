@@ -6,18 +6,42 @@ import { Icon, Skeleton } from '../ui';
 
 function FilingCard({ f }) {
   const worst = f.flags.filter((x) => x.severity === 'high' || x.severity === 'medium');
+  const pct = f.counts.facts ? Math.round((100 * f.counts.verified) / f.counts.facts) : 0;
   return (
     <Link to={`/ipo/${encodeURIComponent(f.id)}`} className="card filing-card">
       <span className="kicker">{f.meta.doc_type} · {f.meta.pages} pages</span>
       <h3 className="h3">{f.company}</h3>
-      <p style={{ margin: 0, fontFamily: 'var(--serif)', fontSize: 17, lineHeight: 1.4, color: 'var(--ink-2)' }}>
-        {f.headline || 'Nothing tripped the checks.'}
-      </p>
-      <div className="row" style={{ marginTop: 'auto', gap: 6 }}>
+      <p className="headline">{f.headline || 'Nothing tripped the checks.'}</p>
+      <div className="row" style={{ gap: 6 }}>
         {worst.slice(0, 3).map((x) => <span key={x.id} className={`sev ${x.severity}`}>{x.label}</span>)}
         {worst.length === 0 && <span className="sev ok">{SEVERITY_LABEL.ok}</span>}
       </div>
+      <div className="foot-line">
+        <span className="row muted" style={{ gap: 8, fontSize: 12.5 }}>
+          <span className="meter" aria-hidden="true"><i style={{ width: `${pct}%` }} /></span>
+          {f.counts.verified}/{f.counts.facts} quotes verified
+        </span>
+        <span className="go">Read <Icon name="arrow" size={13} /></span>
+      </div>
     </Link>
+  );
+}
+
+// Running totals across every filing read so far.
+function Ledger({ filings }) {
+  if (!filings?.length) return null;
+  const sum = (fn) => filings.reduce((n, f) => n + (fn(f) || 0), 0);
+  const pages = sum((f) => f.meta.pages);
+  const facts = sum((f) => f.counts.facts);
+  const verified = sum((f) => f.counts.verified);
+  const flagged = filings.filter((f) => f.flags.some((x) => x.severity === 'high' || x.severity === 'medium')).length;
+  return (
+    <div className="ledger rise d2" aria-label="Totals so far">
+      <div><b>{filings.length}</b><span>filings read cover to cover</span></div>
+      <div><b>{pages.toLocaleString('en-IN')}</b><span>pages, every one of them</span></div>
+      <div className="g"><b>{facts ? ((100 * verified) / facts).toFixed(1) : 0}<small>%</small></b><span>of {facts} quotes found word for word</span></div>
+      <div className="r"><b>{flagged}</b><span>with something worth a closer look</span></div>
+    </div>
   );
 }
 
@@ -30,9 +54,9 @@ function Featured({ filings }) {
   const f = [...filings].sort((a, b) => score(a) - score(b))[0];
   const flags = f.flags.filter((x) => x.severity !== 'ok').slice(0, 3);
   return (
-    <Link to={`/ipo/${encodeURIComponent(f.id)}`} className="card featured" aria-label={`Read ${f.company}`}>
+    <Link to={`/ipo/${encodeURIComponent(f.id)}`} className="card featured rise d1" aria-label={`Read ${f.company}`}>
       <div className="row" style={{ justifyContent: 'space-between' }}>
-        <span className="kicker">Latest read · {f.meta.doc_type}, {f.meta.pages} pages</span>
+        <span className="kicker">Strongest read · {f.meta.doc_type}, {f.meta.pages} pages</span>
         <span className="mono" style={{ color: 'var(--blue)' }}>Open →</span>
       </div>
       <h2 className="h2" style={{ fontSize: 28 }}>{f.company}</h2>
@@ -45,7 +69,10 @@ function Featured({ filings }) {
           </div>
         ))}
       </div>
-      <span className="muted" style={{ fontSize: 13 }}>{f.counts.verified} of {f.counts.facts} quotes checked word for word against the PDF</span>
+      <div className="foot-line">
+        <span>{f.counts.verified} of {f.counts.facts} quotes checked word for word against the PDF</span>
+        <span className="meter" aria-hidden="true"><i style={{ width: `${f.counts.facts ? (100 * f.counts.verified) / f.counts.facts : 0}%` }} /></span>
+      </div>
     </Link>
   );
 }
@@ -61,38 +88,41 @@ export default function Home({ health }) {
   return (
     <main className="wrap page">
       <section className="hero">
-      <div className="stack" style={{ gap: 18, paddingTop: 8 }}>
-        <div className="kicker">Indian IPO filings, read cover to cover</div>
-        <h1 className="h1" style={{ fontSize: 'clamp(40px, 6.4vw, 72px)' }}>What IPOs bury<br />in the fine print.</h1>
-        <p className="lede" style={{ maxWidth: '36ch' }}>
-          Footnote maps who is connected to a company going public and <em>where the money goes</em>, with the page to prove every line.
-        </p>
-        <div className="row">
-          <a className="btn" href="#filings">See the filings <Icon name="arrow" /></a>
-          {health?.uploads && <Link className="btn ghost" to="/add"><Icon name="upload" />Add a filing</Link>}
+        <div className="stack rise" style={{ gap: 22 }}>
+          <span className="eyebrow">Indian IPO filings, read cover to cover</span>
+          <h1 className="h1">What IPOs bury<br />in the <span>fine print.</span></h1>
+          <p className="lede" style={{ maxWidth: '34ch' }}>
+            Footnote maps who is connected to a company going public and <em>where the money goes</em>, with the page to prove every line.
+          </p>
+          <div className="row" style={{ gap: 12 }}>
+            <a className="btn" href="#filings">See the filings <Icon name="arrow" /></a>
+            {health?.uploads && <Link className="btn ghost" to="/add"><Icon name="upload" />Add a filing</Link>}
+            <Link className="btn ghost" to="/method">How it checks</Link>
+          </div>
         </div>
-      </div>
-      <Featured filings={filings} />
+        <Featured filings={filings} />
       </section>
 
-      <section className="grid-3" aria-label="How Footnote works">
+      <Ledger filings={filings} />
+
+      <section className="how" aria-label="How Footnote works">
         {[
-          ['Reads the filing', 'Finds the sections that matter: promoters, management, group companies, related-party transactions, litigation, use of proceeds.'],
-          ['Maps the connections', 'People are matched by DIN, companies by CIN, bankers by SEBI registration, so the same name links across IPOs.'],
-          ['Proves every line', 'Each fact keeps a quote checked word for word against the PDF. Click any page number to see it highlighted.'],
+          ['Reads the whole filing', 'Finds the sections that matter from the filing\'s own contents: promoters, management, group companies, related-party transactions, cases and use of proceeds.'],
+          ['Maps the connections', 'People are matched by DIN, companies by CIN, and bankers by SEBI registration, so the same name links across every IPO it touches.'],
+          ['Proves every line', 'Each fact keeps a quote checked word for word against the PDF. Click any page number to open the filing with the line highlighted.'],
         ].map(([t, d], i) => (
-          <div key={t} className="card card-body stack" style={{ gap: 8 }}>
-            <span className="mono muted">0{i + 1}</span>
-            <h2 className="h3">{t}</h2>
-            <p style={{ margin: 0, color: 'var(--ink-2)' }}>{d}</p>
+          <div key={t}>
+            <span className="n">0{i + 1}</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
           </div>
         ))}
       </section>
 
       <section id="filings" className="stack" aria-labelledby="filings-h" style={{ scrollMarginTop: 90 }}>
-        <div className="row" style={{ justifyContent: 'space-between' }}>
+        <div className="sec-head">
           <h2 id="filings-h" className="h2">Filings</h2>
-          {filings && <span className="muted">{filings.length} read so far</span>}
+          {filings && <span className="note">{filings.length} read so far · sorted as added</span>}
         </div>
         {error && <div className="notice">Could not reach the server: {error}</div>}
         {!filings && !error && <div className="grid-cards">{[0, 1, 2].map((i) => <Skeleton key={i} h={190} />)}</div>}

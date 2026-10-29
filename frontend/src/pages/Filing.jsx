@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { api, METRIC_LABEL } from '../api';
 import MapView from '../MapView';
 import { Link } from '../router';
-import { SEVERITY_LABEL } from '../context';
+import { SEVERITY_LABEL, useViewer } from '../context';
 import { Cite, Icon, Skeleton, Verified } from '../ui';
 
 const money = (r) => (r >= 1e7 ? `₹${(r / 1e7).toFixed(2)} Cr` : `₹${(r / 1e5).toFixed(1)} lakh`);
@@ -70,12 +70,17 @@ function SourcePanel({ data, selected }) {
     }
   }
   if (!title) {
-    return <aside className="card side card-body muted">Select a flag, a line or a box to see the page it came from.</aside>;
+    return (
+      <aside className="card side card-body empty-panel">
+        <span className="kicker">Source</span>
+        <span>Select a flag, a line or a box to see the exact page it came from.</span>
+      </aside>
+    );
   }
   return (
     <aside className="card side card-body stack" aria-live="polite">
       <div className="kicker">{kicker}</div>
-      <h3 className="h2" style={{ fontSize: 22 }}>{title}</h3>
+      <h3 className="title">{title}</h3>
       {sub && <div style={{ color: 'var(--ink-2)' }}>{sub}</div>}
       {extra}
       {citations.length > 0 && <div className="kicker" style={{ marginTop: 6 }}>From the filing</div>}
@@ -101,7 +106,7 @@ function Lists({ data }) {
   const cite = (r) => <Cite filingId={fid} page={r.page} quote={r.quote} verified={r.verified} />;
 
   return (
-    <section className="card" aria-labelledby="lists-h">
+    <section className="card" id="lists" aria-labelledby="lists-h">
       <div className="card-head">
         <h2 id="lists-h" className="h2" style={{ fontSize: 22 }}>Everything Footnote found</h2>
         <div className="seg" role="group" aria-label="Choose a list">
@@ -211,12 +216,12 @@ function Ask({ data, enabled }) {
     setBusy(false);
   };
   return (
-    <section className="card card-body stack" aria-labelledby="ask-h" style={{ maxWidth: 920 }}>
+    <section className="card card-body stack" id="ask" aria-labelledby="ask-h" style={{ maxWidth: 920 }}>
       <h2 id="ask-h" className="h2" style={{ fontSize: 22 }}>Ask about this filing</h2>
       {!enabled && <div className="notice">Questions are switched off on this server.</div>}
       {turns.map((t, i) => (
-        <div key={i} className="stack" style={{ gap: 8, borderTop: i ? '1px solid var(--line-soft)' : 0, paddingTop: i ? 14 : 0 }}>
-          <div style={{ fontWeight: 600 }}>{t.question}</div>
+        <div key={i} className="stack q-turn" style={{ gap: 10 }}>
+          <div className="q">{t.question}</div>
           {t.pending && <div className="stack" style={{ gap: 8 }}><Skeleton w="90%" /><Skeleton w="70%" /></div>}
           {t.error && <div className="notice">{t.error}</div>}
           {t.reply && <Answer text={t.reply} citations={t.citations} filingId={data.id} />}
@@ -236,7 +241,32 @@ function Ask({ data, enabled }) {
   );
 }
 
+// Section tabs that stay under the header and follow the reader down the page.
+function SubNav({ items }) {
+  const [on, setOn] = useState(items[0]?.[0]);
+  useEffect(() => {
+    const els = items.map(([id]) => document.getElementById(id)).filter(Boolean);
+    const pick = () => {
+      let cur = els[0]?.id;
+      for (const el of els) if (el.getBoundingClientRect().top < 160) cur = el.id;
+      setOn(cur);
+    };
+    pick(); window.addEventListener('scroll', pick, { passive: true });
+    return () => window.removeEventListener('scroll', pick);
+  }, [items]);
+  return (
+    <nav className="subnav" aria-label="Sections">
+      <div className="in">
+        {items.map(([id, label, n]) => (
+          <a key={id} href={`#${id}`} className={on === id ? 'on' : undefined}>{label}{n != null && <span className="c">{n}</span>}</a>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 export default function Filing({ id, health }) {
+  const viewer = useViewer();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -271,38 +301,58 @@ export default function Filing({ id, health }) {
 
   const m = data.meta;
   const shownFlags = data.flags;
+  const sections = [
+    shownFlags.length > 0 && ['flags', 'What stands out', shownFlags.length],
+    ['map', 'Who is connected', null],
+    ['lists', 'Everything found', data.counts.facts],
+    ['ask', 'Ask', null],
+  ].filter(Boolean);
   return (
     <main className="wrap page">
-      <section className="stack" style={{ maxWidth: 960 }}>
-        <div className="kicker">{m.doc_type} · {m.pages} pages{data.promoter_holding_pct ? ` · Promoters hold ${data.promoter_holding_pct}%` : ''}</div>
-        <h1 className="h1">{data.company}</h1>
-        {data.headline
-          ? <p className="lede" style={{ maxWidth: '40ch' }}>{data.headline}</p>
-          : <p className="lede" style={{ maxWidth: '40ch' }}>Nothing in this filing tripped Footnote's checks. Read the map and lists to see who is behind it.</p>}
-        <div className="stats mono">
-          <span>{data.counts.people} people</span><span>{data.counts.related_parties} related parties</span>
-          <span>{data.counts.verified} of {data.counts.facts} quotes verified</span><span>read in {Math.round(m.seconds)}s</span>
+      <section className="stack rise" style={{ gap: 18 }}>
+        <div className="crumbs"><Link to="/">Filings</Link><span aria-hidden="true">/</span><span>{data.company}</span></div>
+        <div className="filing-head">
+          <div className="stack" style={{ gap: 16 }}>
+            <span className="eyebrow">{m.doc_type} · {m.pages} pages{data.promoter_holding_pct ? ` · Promoters hold ${data.promoter_holding_pct}%` : ''}</span>
+            <h1 className="h1">{data.company}</h1>
+            <p className="lede" style={{ maxWidth: '42ch' }}>
+              {data.headline || "Nothing in this filing tripped Footnote's checks. Read the map and lists to see who is behind it."}
+            </p>
+          </div>
+          <div className="actions">
+            <button type="button" className="btn ghost" onClick={() => viewer.open({ filingId: data.id, page: 1, quote: '' })}><Icon name="page" />Open the filing</button>
+            {health?.llm && <a className="btn" href="#ask"><Icon name="send" />Ask about it</a>}
+          </div>
+        </div>
+        <div className="ledger" aria-label="About this read">
+          <div><b>{data.counts.people}</b><span>people named, linked by DIN</span></div>
+          <div><b>{data.counts.related_parties}</b><span>related parties</span></div>
+          <div className="g"><b>{data.counts.verified}<small>/{data.counts.facts}</small></b><span>quotes found word for word</span></div>
+          <div><b>{Math.round(m.seconds)}<small>s</small></b><span>to read {m.pages} pages</span></div>
         </div>
         {m.failed_sections?.length > 0 && <div className="notice">Some sections couldn't be read and are missing: {m.failed_sections.join(', ')}.</div>}
       </section>
 
+      <SubNav items={sections} />
+
       {shownFlags.length > 0 && (
-        <section aria-labelledby="flags-h" className="stack">
-          <div className="row" style={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <section aria-labelledby="flags-h" className="stack" id="flags" style={{ gap: 20 }}>
+          <div className="sec-head">
             <h2 id="flags-h" className="h2">What stands out</h2>
-            <span className="muted" style={{ fontSize: 13 }}>Fixed rules over what the filing discloses, not AI opinions. A flag is a reason to read, not proof of wrongdoing. <Link to="/method">How checks work</Link></span>
+            <span className="note">Fixed rules over what the filing discloses, not AI opinions. A flag is a reason to read, not proof of wrongdoing. <Link to="/method">How checks work</Link></span>
           </div>
           <div className="flags">
             {shownFlags.map((f) => (
               <button key={f.id} type="button" className={`flag ${f.severity}`} aria-pressed={selected?.type === 'flag' && selected.id === f.id}
-                onClick={() => { setSelected({ type: 'flag', id: f.id }); document.getElementById('map-h')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>
+                onClick={() => { setSelected({ type: 'flag', id: f.id }); document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>
                 <span className="row" style={{ justifyContent: 'space-between', gap: 8 }}>
                   <span className="kicker">{f.label}</span><span className={`sev ${f.severity}`}>{SEVERITY_LABEL[f.severity]}</span>
                 </span>
                 <span className="value">{f.value}</span>
                 <span className="detail">{f.detail}</span>
-                <span className="mono" style={{ color: 'var(--blue)' }}>
-                  {[...new Set(f.citations.map((c) => c.page).filter(Boolean))].slice(0, 4).map((p) => `p.${p}`).join(' · ')} →
+                <span className="pages">
+                  <span>{[...new Set(f.citations.map((c) => c.page).filter(Boolean))].slice(0, 4).map((p) => `p.${p}`).join(' · ')}</span>
+                  <Icon name="arrow" size={14} />
                 </span>
               </button>
             ))}
@@ -310,10 +360,10 @@ export default function Filing({ id, health }) {
         </section>
       )}
 
-      <section className="split" aria-labelledby="map-h">
+      <section className="split" id="map" aria-labelledby="map-h">
         <div className="card main">
           <div className="card-head">
-            <h2 id="map-h" className="h2" style={{ fontSize: 22, scrollMarginTop: 90 }}>Who is connected</h2>
+            <h2 id="map-h" className="h2" style={{ fontSize: 22 }}>Who is connected</h2>
             <span className="muted" style={{ fontSize: 13 }}>Tap any box or line to see its source</span>
           </div>
           <div style={{ padding: '8px 4px' }}>
